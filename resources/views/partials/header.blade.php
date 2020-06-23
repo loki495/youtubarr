@@ -25,9 +25,10 @@
                     </div>
                 </li>
             </ul>
-            <form onsubmit="return false;">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value="{{ request()->keywords ?? '' }}" id="search-keywords"/>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="window.location='{{ route('videos.search') }}/'+document.querySelector('#search-keywords').value">Search</button>
+            <form method="POST" action="{{ route('videos.search') }}">
+                @csrf
+                <input name="keywords" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value="{{ request()->keywords ?? '' }}" id="search-keywords"/>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
     </nav>

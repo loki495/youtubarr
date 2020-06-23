@@ -1,0 +1,40 @@
+.video-list.table,
+.video-list.table > div {
+    display: flex;
+    flex-wrap: wrap;
+}
+.video-list-header {
+    background: #ddd;
+    color: #282828;
+}
+.video-list-item {
+    width: 100%;
+}
+.video-list-item > div {
+    padding: 20px;
+}
+.video-list-item .thumb {
+    width: 20%;
+}
+.video-list-item .title {
+    font-size: inherit;
+    width: 20%;
+}
+.video-list-item .description {
+    min-width: 20%;
+    flex-grow: 1;
+    max-height: 100px;
+    overflow: hidden;
+}
+.video-list-item .published-on {
+    width: 20%;
+    text-align: center;
+}
+.video-list-item .download {
+    width: 20%;
+}
+.video-list-item img {
+    max-width: 100%;
+}
+
+

@@ -11,7 +11,3 @@ Requirements
 ------------
 
 - Laravel 7+
-- youtube-dl
-
-
-

@@ -5,18 +5,62 @@ namespace App\Services;
 use Symfony\Component\Process\Process;
 use App\Video;
 
+use Alaouy\Youtube\Facades\Youtube;
+
 class YoutubeService {
 
     public $test = 0;
 
     public function search($id) {
+
+        $collection = collect();
+
+        $results = Youtube::search($id);
+
+        foreach ($results as $res) {
+
+            if (isset($res->id->videoId)) {
+                // its a video
+                $video_obj = Youtube::getVideoInfo($res->id->videoId,['id', 'snippet', 'contentDetails', 'player', 'statistics', 'status','recordingDetails']);
+
+                $video = new Video();
+
+                $video->title = $video_obj->snippet->title;
+                $video->youtube_id = $video_obj->id;
+                $video->extra = [
+                    'channel_id' => $video_obj->snippet->channelId,
+                    'channel_title' => $video_obj->snippet->channelTitle,
+                    'channel_url' => 'https://www.youtube.com/channel/' . $video_obj->snippet->channelId,
+                ];
+
+                $video->status = '';
+                $video->description = $video_obj->snippet->description;
+                $video->published_on = $video_obj->snippet->publishedAt;
+                $video->thumb = $video_obj->snippet->thumbnails->default->url;
+                $video->image = $video_obj->snippet->thumbnails->high->url;
+                $video->duration = $this->parseDuration($video_obj->contentDetails->duration);
+
+                $collection->add($video);
+            } else
+            if (isset($res->id->channelId)) {
+                d(1);
+            }
+        }
+
+        /*
+
         $cmd = 'youtube-dl';
 
         //$full_cmd = implode(' ',[$cmd,'-j',$id,'--write-info-json']);
         //dd($full_cmd);
         $process = new Process([$cmd,'-j',$id,'--write-info-json']);
         $process->run();
-        $json = json_decode($process->getOutput());
+
+        $output = $process->getOutput();
+        $error = $process->getErrorOutput();
+        d($output,$error);
+
+        $json = json_decode($output);
 
         if (!$json) {
             return null;
@@ -42,7 +86,10 @@ class YoutubeService {
         $video->duration = $json->duration;
         $video->formats = $json->formats;
 
-        return collect()->add($video);
+        $collection->add($video);
+         */
+
+        return $collection;
     }
 
     public function download($id, $format) {
@@ -73,5 +120,19 @@ class YoutubeService {
             return $r[0];
         }
         return '';
+    }
+
+    public function parseDuration($str) {
+        $str = substr($str,2);
+
+        $h_end = strpos($str,'H');
+        $m_end = strpos($str,'M');
+
+        $h = substr($str, 0, $h_end);
+        $m = substr($str, $h_end + 1, $m_end - 2);
+        $s = substr($str, $m_end + 1, -1);
+
+        $str = "$h:$m:$s";
+        return $str;
     }
 }

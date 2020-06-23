@@ -20,3 +20,25 @@ if (!function_exists('bytes_to_human')) {
 
     }
 }
+
+if (!function_exists('human_time')) {
+    function human_time($time) {
+        $out = '';
+
+        $parts = explode(':', $time);
+        if (count($parts) > 2) {
+            $out .= $parts[0] . ' Hrs ';
+            $out .= $parts[1] . ' Min ';
+            $out .= $parts[2] . ' Sec';
+        } else 
+        if (count($parts) > 1) {
+            $out .= $parts[0] . ' Min ';
+            $out .= $parts[1] . ' Sec';
+        } else {
+            $out .= $parts[0] . ' Sec';
+        }
+
+        return trim($out);
+
+    }
+}

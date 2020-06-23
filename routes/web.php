@@ -17,4 +17,5 @@ use App\Http\Controllers\YoutubeController;
 
 Route::post('/download', [YoutubeController::class,'download'])->name('videos.download');
 Route::get('/search/{keywords?}', [YoutubeController::class,'search'])->name('videos.search');
+Route::post('/search', [YoutubeController::class,'search'])->name('videos.search');
 Route::get('/', [YoutubeController::class,'index'])->name('videos.home');

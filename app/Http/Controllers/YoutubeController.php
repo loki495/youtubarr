@@ -11,10 +11,14 @@ use App\Channel;
 class YoutubeController extends Controller
 {
     public function index() {
-        return view('videos.home');
+        $videos = Video::all();
+        return view('videos.home',compact('videos'));
     }
 
-    public function search($keywords, YoutubeService $youtube) {
+    public function search(YoutubeService $youtube, Request $request, $keywords = '') {
+        if (!$keywords) {
+            $keywords = $request->keywords;
+        }
         $videos = $youtube->search($keywords);
         return view('videos.search', compact('videos'));
     }
@@ -22,6 +26,8 @@ class YoutubeController extends Controller
     public function download(Request $request, YoutubeService $youtube) {
         //$output = $youtube->download($request->youtube_id, $request->format);
         //d($output);
+
+        /*
         if (Video::where('youtube_id',$request->youtube_id)) {
             return redirect()->route('videos.home')->with('error','Video exists');
         }
@@ -33,7 +39,7 @@ class YoutubeController extends Controller
 
         $channel = Channel::firstOrCreate(
             [
-                'channel_id' => $video->youtube_uploader['id']
+                'channel_id' => $video->extra['channel_id']
             ],
             [
                 'channel_id' => $video->youtube_uploader['id'],
@@ -71,6 +77,7 @@ class YoutubeController extends Controller
         $video->channel_id = $channel->id;
         $video->save();
 
+        */
         return redirect()->route('videos.home');
     }
 }
